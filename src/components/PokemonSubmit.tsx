@@ -61,7 +61,11 @@ const PokemonSubmit: React.FC<propsType> = ({
   return (
     <>
       <CenteredDiv>
-        {responded ? <Typography variant="h5">{result}</Typography> : null}
+        {responded ? (
+          <Typography variant="h5" align="center">
+            {result}
+          </Typography>
+        ) : null}
       </CenteredDiv>
       <Box margin={2} justifyContent="center" sx={{ display: "flex" }}>
         {!responded ? (
