@@ -61,7 +61,7 @@ const PokemonSubmit: React.FC<propsType> = ({ pokemonName }) => {
             <TextField
               inputRef={(input) => input && input.focus()}
               id="textField"
-              label="?"
+              label="Pokemon Name"
               autoComplete="off"
               value={text}
               onChange={handleChange}
