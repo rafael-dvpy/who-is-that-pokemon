@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Box, TextField, Button, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 
 type propsType = {
   pokemonName: string;
+  reload: boolean;
+  setReload: (value: boolean) => void;
 };
 
 const CenteredDiv = styled.div`
@@ -11,7 +13,11 @@ const CenteredDiv = styled.div`
   justify-content: center;
 `;
 
-const PokemonSubmit: React.FC<propsType> = ({ pokemonName }) => {
+const PokemonSubmit: React.FC<propsType> = ({
+  pokemonName,
+  reload,
+  setReload,
+}) => {
   const [text, setText] = useState("");
   const [responded, setResponded] = useState(false);
   const [result, setResult] = useState("");
@@ -25,16 +31,19 @@ const PokemonSubmit: React.FC<propsType> = ({ pokemonName }) => {
   };
 
   const reloadPage = () => {
-    window.location.reload();
+    setReload(!reload);
+    setResponded(false);
   };
 
-  const handleClick = async () => {
+  const textField = useRef(null);
+
+  const handleEnter = async () => {
     setResponded(true);
-    if (text.toLocaleLowerCase() == pokemonName) {
+    if (text.toLocaleLowerCase().replace(/\s+/g, "") == pokemonName) {
       setResult(
         `You won, the Pokemon was ${capitalizeFirstLetter(pokemonName)}`
       );
-    } else if (text.toLocaleLowerCase() != pokemonName) {
+    } else if (text.toLocaleLowerCase().replace(/\s+/g, "") != pokemonName) {
       setResult(
         `You lost, the Pokemon was ${capitalizeFirstLetter(pokemonName)}`
       );
@@ -44,12 +53,11 @@ const PokemonSubmit: React.FC<propsType> = ({ pokemonName }) => {
 
   if (responded) {
     document.addEventListener("keydown", function handleKeyDown(e) {
-      if (e.key === "Enter") {
-        reloadPage();
+      if (e.key === " ") {
+        document.getElementById("myBtn")?.click();
       }
     });
   }
-
   return (
     <>
       <CenteredDiv>
@@ -65,14 +73,14 @@ const PokemonSubmit: React.FC<propsType> = ({ pokemonName }) => {
               autoComplete="off"
               value={text}
               onChange={handleChange}
-              onKeyPress={(e) => e.key === "Enter" && handleClick()}
+              onKeyPress={(e) => e.key === "Enter" && handleEnter()}
             />
           </form>
         ) : (
           <Button
+            id="myBtn"
             variant="contained"
             color="primary"
-            onKeyPress={(e) => e.key === "Enter" && reloadPage()}
             onClick={reloadPage}
           >
             Try Again
