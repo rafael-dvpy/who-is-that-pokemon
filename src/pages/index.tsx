@@ -1,3 +1,4 @@
+import { CircularProgress } from "@mui/material";
 import type { NextPage } from "next";
 import { useEffect, useMemo, useState } from "react";
 import Header from "../components/Header";
@@ -30,9 +31,9 @@ const Home: NextPage = () => {
       <Header />
       <PokemonImage
         alt={response.name !== "" ? response.name : "placeholder"}
-        src={response.img !== "" ? response.img : "/placeholder.png"}
+        src={response.img}
       />
-      <PokemonSubmit pokemonName={response.name} />
+      <PokemonSubmit pokemonName={response.name ? response.name : ""} />
     </>
   );
 };

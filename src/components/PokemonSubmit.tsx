@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, TextField, Button } from "@mui/material";
+import { Box, TextField, Button, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 
 type propsType = {
@@ -20,9 +20,13 @@ const PokemonSubmit: React.FC<propsType> = ({ pokemonName }) => {
     setText(e.currentTarget.value);
   };
 
-  function capitalizeFirstLetter(string: string) {
+  const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
-  }
+  };
+
+  const reloadPage = () => {
+    window.location.reload();
+  };
 
   const handleClick = async () => {
     setResponded(true);
@@ -37,26 +41,43 @@ const PokemonSubmit: React.FC<propsType> = ({ pokemonName }) => {
     }
     setText("");
   };
+
+  if (responded) {
+    document.addEventListener("keydown", function handleKeyDown(e) {
+      if (e.key === "Enter") {
+        reloadPage();
+      }
+    });
+  }
+
   return (
     <>
-      <CenteredDiv>{responded ? result : null}</CenteredDiv>
+      <CenteredDiv>
+        {responded ? <Typography variant="h5">{result}</Typography> : null}
+      </CenteredDiv>
       <Box margin={2} justifyContent="center" sx={{ display: "flex" }}>
-        <form action="">
-          <TextField
-            id="textField"
-            label="?"
-            value={text}
-            onChange={handleChange}
-          />
+        {!responded ? (
+          <form action="">
+            <TextField
+              inputRef={(input) => input && input.focus()}
+              id="textField"
+              label="?"
+              autoComplete="off"
+              value={text}
+              onChange={handleChange}
+              onKeyPress={(e) => e.key === "Enter" && handleClick()}
+            />
+          </form>
+        ) : (
           <Button
-            style={{ marginLeft: 10, height: "56px" }}
             variant="contained"
             color="primary"
-            onClick={handleClick}
+            onKeyPress={(e) => e.key === "Enter" && reloadPage()}
+            onClick={reloadPage}
           >
-            Submit
+            Try Again
           </Button>
-        </form>
+        )}
       </Box>
     </>
   );
