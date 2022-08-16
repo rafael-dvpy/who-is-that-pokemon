@@ -1,6 +1,6 @@
 FROM node:16-alpine
 
-RUN apk add git
+RUN apk add git & npm i -g vercel
 
 USER node
 
