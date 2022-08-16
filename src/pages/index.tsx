@@ -1,32 +1,38 @@
-import axios from "axios";
 import type { NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Header from "../components/Header";
 import PokemonImage from "../components/PokemonImage";
 import PokemonSubmit from "../components/PokemonSubmit";
+import http from "../util/http";
 
 const Home: NextPage = () => {
-  const [data, setData] = useState({
-    pokemonName: "",
-    pokemonImage: "",
+  const [response, setResponse] = useState({
+    name: "",
+    img: "",
   });
-  const getRandomNumber = (min: number, max: number) => {
-    return Math.floor(Math.random() * (max - min + 1) + min);
+
+  const espera = async () => {
+    const { data } = await http;
+    setResponse({
+      name: data.name,
+      img: data.sprites.other.dream_world.front_default,
+    });
+    console.log(data.name);
   };
+
   useEffect(() => {
-    axios
-      .get(`https://pokeapi.co/api/v2/pokemon/${getRandomNumber(1, 150)}`)
-      .then((res) => {
-        const pokemonName = res.data.name;
-        const pokemonImage = res.data.sprites.front_default;
-        setData({ pokemonName, pokemonImage });
-      });
+    espera();
+    console.log("reload");
   }, []);
+
   return (
     <>
       <Header />
-      <PokemonImage alt={data.pokemonName} src={data.pokemonImage} />
-      <PokemonSubmit />
+      <PokemonImage
+        alt={response.name !== "" ? response.name : "placeholder"}
+        src={response.img !== "" ? response.img : "/placeholder.png"}
+      />
+      <PokemonSubmit pokemonName={response.name} />
     </>
   );
 };
